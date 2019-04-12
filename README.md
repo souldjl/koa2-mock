@@ -5,4 +5,8 @@
     > 访问静态资源
 - koa2-cors
     > cors跨域中间件
--
+- koa-multer
+    > 文件上传中间件
+- koa-router
+    > 路由文件
+

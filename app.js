@@ -8,8 +8,10 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
 const path = require('path');
 const static = require('koa-static');
-const router = require('./router/index');
 const fs = require('fs')
+
+// koa会全部应用所有的 中间件，再匹配路由
+// next 前面必须放await
 
 const port = '3033';
 const app = new Koa();
@@ -35,6 +37,12 @@ app.use(cors({
 }));
 
 
+app.use(async(ctx,next)=>{
+    await next();
+    if (ctx.status === 404){
+        ctx.body = '404'
+    }
+});
 
 
 app.use(async (ctx, next) => {
@@ -44,11 +52,7 @@ app.use(async (ctx, next) => {
    console.log(`the server responsed at ${e_date - s_date}ms`);
    console.log('ctx.query',ctx.query);
    console.log('ctx.queryString',ctx.querystring);
-   console.log('ctx.request.query',ctx.request.query);
-   console.log('ctx.request.query',ctx.request.querystring);
-
 });
-
 
 
 // error-handling
@@ -85,8 +89,3 @@ for (let i=0;i<js_files.length; i++){
 app.listen(port, () => {
     console.log(`app is listening on http://localhost:${port}`);
 });
-
-
-
-
-
