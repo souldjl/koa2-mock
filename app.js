@@ -8,7 +8,9 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
 const path = require('path');
 const static = require('koa-static');
-const fs = require('fs')
+const fs = require('fs');
+const compress = require('koa-compress'); //开启gzip压缩
+
 
 // koa会全部应用所有的 中间件，再匹配路由
 // next 前面必须放await
@@ -17,6 +19,10 @@ const port = '3033';
 const app = new Koa();
 
 app.use(bodyParser());
+
+// app.use(compress({
+//     threshold: 2048
+// }));
 
 app.use(static(
     path.join(__dirname,'public')
@@ -27,7 +33,7 @@ app.use(cors({
         if (ctx.url === '/test') {
             return '*';
         }
-        return 'http://localhost:8480'; // 允许请求访问的域
+        return 'http://172.24.134.223:8380'; // 允许请求访问的域
     },
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
@@ -37,7 +43,7 @@ app.use(cors({
 }));
 
 
-app.use(async(ctx,next)=>{
+app.use(async(ctx,next) => {
     await next();
     if (ctx.status === 404){
         ctx.body = '404'
@@ -85,6 +91,10 @@ for (let i=0;i<js_files.length; i++){
     app.use(require('./router/'+ js_files[i]).routes())
     console.log(js_files[i])
 }
+
+
+const config = require('./common/config');
+console.log(config);
 
 app.listen(port, () => {
     console.log(`app is listening on http://localhost:${port}`);

@@ -9,4 +9,9 @@
     > 文件上传中间件
 - koa-router
     > 路由文件
+- koa-compress
+    > 开启gzip压缩
+- koa-mysql
+    > node操作MySQL的引擎
+
 
